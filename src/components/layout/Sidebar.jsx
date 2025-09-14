@@ -1,12 +1,24 @@
 import "./Sidebar.css";
-import { X, Speedometer, People, Gear, FileText } from "react-bootstrap-icons";
+// import { X, Speedometer, People, Gear, FileText } from "react-bootstrap-icons";
+import {X, Speedometer2, CalendarCheck, PersonPlus, Person, Pencil, Check2Square, FileText, Database, ClipboardCheck,} from "react-bootstrap-icons";
 
 const Sidebar = ({ isOpen, toggleSidebar, currentPage, setCurrentPage }) => {
+  // const menuItems = [
+  //   { name: "Dashboard", icon: <Speedometer /> },
+  //   { name: "Users", icon: <People /> },
+  //   { name: "Settings", icon: <Gear /> },
+  //   { name: "Reports", icon: <FileText /> },
+  // ];
   const menuItems = [
-    { name: "Dashboard", icon: <Speedometer /> },
-    { name: "Users", icon: <People /> },
-    { name: "Settings", icon: <Gear /> },
-    { name: "Reports", icon: <FileText /> },
+    { name: "Dashboard", icon: <Speedometer2 /> },
+    { name: "Add Events And Notices", icon: <CalendarCheck /> },
+    { name: "Add Student", icon: <PersonPlus /> },
+    { name: "Add Teacher", icon: <Person /> },
+    { name: "Modify Class Records", icon: <Pencil /> },
+    { name: "Modify Attendance", icon: <Check2Square /> },
+    { name: "Check Logs", icon: <FileText /> },
+    { name: "Check DataStorage", icon: <Database /> },
+    { name: "Process Attendance", icon: <ClipboardCheck /> },
   ];
 
   return (
