@@ -24,7 +24,11 @@ const RightPanel = () => {
     : [];
 
   return (
-    <div className="card shadow-sm p-3 w-100 h-100 d-flex flex-column">
+    <div className="card shadow-sm p-3 w-100 h-100 d-flex flex-column" style={{
+      minHeight: "850px",
+      maxHeight: "850px",
+      overflowY: "auto",
+    }}>
       {/* Header + Search */}
       <div className="sticky-top bg-white pb-2">
         <h5 className="mb-3">Search Records</h5>
@@ -41,7 +45,7 @@ const RightPanel = () => {
         className="border rounded p-2 bg-light"
         style={{
           minHeight: "480px",
-          maxHeight: "480px",
+          maxHeight: "780px",
           overflowY: "auto",
         }}
       >

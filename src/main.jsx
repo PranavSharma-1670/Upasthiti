@@ -10,7 +10,7 @@ import { ExcelDataProvider } from "./context/ExcelDataContext.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     {/* Load only Students + Holidays sheets */}
-    <ExcelDataProvider sheetsToLoad={["Students", "Holidays"]}>
+    <ExcelDataProvider sheetsToLoad={["Students", "Holidays", "Events", "Notices"]}>
       <App />
     </ExcelDataProvider>
   </React.StrictMode>
