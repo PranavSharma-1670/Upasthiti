@@ -1,4 +1,92 @@
-:root {
+/* index.css - Bootstrap friendly overrides */
+
+/* Reset base styles */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f8f9fa; /* Bootstrap's default light background */
+  color: #212529;           /* Bootstrap's default text color */
+}
+
+/* Links */
+a {
+  color: #0d6efd; /* Bootstrap primary */
+  text-decoration: none;
+}
+a:hover {
+  color: #0a58ca; /* Darker primary */
+  text-decoration: underline;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Buttons (let Bootstrap handle most styling) */
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Calendar overrides to ensure visibility */
+.react-calendar {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.react-calendar__tile {
+  background: none;
+  color: #212529;
+}
+
+.react-calendar__tile--now {
+  background: #e7f1ff;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.react-calendar__tile.holiday-tile {
+  background-color: #ffcccc !important;
+  color: #dc3545 !important; /* Bootstrap danger red */
+  border-radius: 50% !important;
+  font-weight: bold;
+}
+
+/* Calendar holiday styling */
+.react-calendar__tile.holiday-tile {
+  background-color: #ffcccc !important; /* light red background */
+  color: #dc3545 !important;            /* dark red text */
+  font-weight: bold;
+  border-radius: 50% !important;
+  position: relative;
+}
+
+/* Tooltip for holiday title */
+.react-calendar__tile.holiday-tile:hover::after {
+  content: attr(data-title); /* get the holiday title from a data attribute */
+  position: absolute;
+  bottom: 120%; /* above the date */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #dc3545;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0.95;
+}
+
+
+
+/* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -65,4 +153,4 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+} */
