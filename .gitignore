@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+TestDatabaseConnectivity/testdb.js
+backend/db.js
