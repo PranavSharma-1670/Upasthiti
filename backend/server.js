@@ -18,29 +18,42 @@ app.get("/api/test", async (req, res) => {
   }
 });
 
+// GET all events/notices
 app.get("/api/events", async (req, res) => {
     try {
-      const result = await pool.query("SELECT * FROM events_and_notices ORDER BY date ASC");
+      const result = await pool.query(
+        "SELECT event_id, event_date, title, description, type, created_at, updated_at FROM events_notices ORDER BY event_date ASC"
+      );
       res.json(result.rows);
     } catch (err) {
-      console.error(err.message);
+      console.error("Fetch error:", err.message);
       res.status(500).json({ error: "Server error" });
     }
   });
-
+  
+// POST a new event/notice
 app.post("/api/events", async (req, res) => {
-    const { title, description, date, type, issued_by } = req.body;
+    const { title, description, date, type } = req.body;
+  
+    if (!title || !date || !type) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+  
     try {
       const result = await pool.query(
-        "INSERT INTO events_and_notices (title, description, date, type, issued_by) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-        [title, description, date, type, issued_by]
+        `INSERT INTO events_notices (title, description, event_date, type)
+         VALUES ($1, $2, $3, $4)
+         RETURNING event_id, title, description, event_date, type, created_at, updated_at`,
+        [title, description, date, type]
       );
-      res.json(result.rows[0]);
+  
+      res.status(201).json(result.rows[0]);
     } catch (err) {
       console.error("Insert error:", err.message);
       res.status(500).json({ error: "Server error" });
     }
   });
+  
   
 
 app.listen(PORT, () => {
