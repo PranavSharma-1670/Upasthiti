@@ -145,34 +145,70 @@ app.get("/api/classes", async (req, res) => {
   });
 
   
-  
+
   app.get("/api/classes/sections", async (req, res) => {
     try {
       const result = await pool.query(`
-        SELECT c.class_id, c.class_name, 
-               ARRAY_AGG(DISTINCT s.section ORDER BY s.section) as sections
-        FROM classes c
-        LEFT JOIN students s ON c.class_id = s.class_id
-        GROUP BY c.class_id, c.class_name
-        ORDER BY c.class_name ASC
+        SELECT class_id, class_name, no_of_sections
+        FROM classes;
       `);
-      
-      // Process the result to ensure we have the right format
-      const classesWithSections = result.rows.map(row => ({
-        class_id: row.class_id,
-        class_name: row.class_name,
-        sections: row.sections.filter(section => section !== null) // Remove null sections
-      }));
-      
+  
+      // Map each row into class with sections [A..]
+      const classesWithSections = result.rows.map(row => {
+        const sections = Array.from(
+          { length: row.no_of_sections },
+          (_, i) => String.fromCharCode(65 + i) // A, B, C, D...
+        );
+  
+        return {
+          class_id: row.class_id,
+          class_name: row.class_name,
+          sections
+        };
+      });
+  
       res.json(classesWithSections);
     } catch (err) {
       console.error("Error fetching classes with sections:", err.message);
       res.status(500).json({ error: "Server error" });
     }
   });
+  
+  
+// app.get("/api/classes/sections", async (req, res) => {
+//     try {
+//         const result = await pool.query(`
+//             SELECT class_name, COUNT(section) AS no_of_sections
+//             FROM classes
+//             GROUP BY class_name;
+//         `);
+      
+//       // Process the result to ensure we have the right format
+//       const classesWithSections = result.rows.map(row => ({
+//         class_id: row.class_id,
+//         class_name: row.class_name,
+//         sections: row.sections.filter(section => section !== null) // Remove null sections
+//       }));
+      
+//       res.json(classesWithSections);
+//     } catch (err) {
+//       console.error("Error fetching classes with sections:", err.message);
+//       res.status(500).json({ error: "Server error" });
+//     }
+//   });
 
 
-// Test connection
+    //   const result = await pool.query(`
+    //     SELECT c.class_id, c.class_name, 
+    //            ARRAY_AGG(DISTINCT s.section ORDER BY s.section) as sections
+    //     FROM classes c
+    //     LEFT JOIN students s ON c.class_id = s.class_id
+    //     GROUP BY c.class_id, c.class_name
+    //     ORDER BY c.class_name ASC
+    //   `);
+
+
+// // Test connection
 
 // import express from "express";
 // import cors from "cors";
