@@ -1,0 +1,38 @@
+/* .slide-panel {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.4s ease-in-out;
+  }
+  
+  .slide-panel.open {
+    max-height: 500px; /* enough to fit form */
+    /* opacity: 1;
+    margin-bottom: 1rem;
+  } */ 
+
+  /* slide panel animation */
+.slide-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease-in-out, opacity 0.25s ease;
+    opacity: 0;
+  }
+  .slide-panel.open {
+    max-height: 80vh; /* panel can expand up to 80% of viewport height */
+    opacity: 1;
+    margin-bottom: 1rem;
+  }
+  
+  /* make inner card scrollable when content is long */
+  .form-scrollable {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 8px; /* space for scrollbar */
+  }
+  
+  /* small niceties */
+  .form-scrollable .form-label {
+    font-size: 0.9rem;
+  }
+  
