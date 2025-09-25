@@ -1,13 +1,13 @@
-
-
 // self attemt at making it
-
 import React, { useState, useEffect } from "react";
 import "./AddStudent.css";
 
 const AddStudent = () => {
-  const [selectedSection, setSelectedSection] = useState(null);
+  const [classesWithSections, setClassesWithSections] = useState({});
+  const [selectedGrade, setSelectedGrade] = useState("");
+  const [selectedSection, setSelectedSection] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [studentsList, setStudentsList] = useState([]);
 
   // Form state (maps to your students table)
   const [formData, setFormData] = useState({
@@ -28,18 +28,32 @@ const AddStudent = () => {
   });
 
   const [classes, setClasses] = useState([]); // fetched from backend
-  const [students, setStudents] = useState({}); // { "Grade 1-A": [{...}, ...] }
+  // const [students, setStudents] = useState({}); // { "Grade 1-A": [{...}, ...] }
+  const [students, setStudents] = useState([]);
 
   // Fetch classes from backend
+  // useEffect(() => {
+  //   const fetchClasses = async () => {
+  //     try {
+  //       const res = await fetch("http://localhost:5050/api/students/classes");
+  //       if (!res.ok) throw new Error("Failed to fetch classes");
+  //       const data = await res.json();
+  //       setClasses(data || []);
+  //     } catch (err) {
+  //       console.error("Error fetching classes:", err.message);
+  //     }
+  //   };
+  //   fetchClasses();
+  // }, []);
+
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const res = await fetch("http://localhost:5050/api/classes");
-        if (!res.ok) throw new Error("Failed to fetch classes");
+        const res = await fetch("http://localhost:5050/api/students/classes");
         const data = await res.json();
-        setClasses(data || []);
+        setClassesWithSections(data);
       } catch (err) {
-        console.error("Error fetching classes:", err.message);
+        console.error("Error fetching classes:", err);
       }
     };
     fetchClasses();
@@ -147,7 +161,44 @@ const AddStudent = () => {
     }
   };
 
-  const [selectedGrade, setSelectedGrade] = useState("");
+  const handleSearch = async () => {
+    if (!selectedGrade || !selectedSection) {
+      alert("Please select both grade and section");
+      return;
+    }
+  
+    try {
+      const res = await fetch(
+        `http://localhost:5050/api/students/${selectedGrade}/${selectedSection}`
+      );
+      if (!res.ok) throw new Error("Failed to fetch students");
+      const data = await res.json();
+      setStudents(data);
+    } catch (err) {
+      console.error("Error fetching students:", err);
+    }
+  };
+
+  // const handleSearch = async () => {
+  //   if (!selectedGrade || !selectedSection) return;
+  
+  //   try {
+  //     // find the class_id corresponding to the selected grade
+  //     const classEntry = classes.find((c) => c.class_name === selectedGrade);
+  //     if (!classEntry) return;
+  
+  //     const res = await fetch(
+  //       `http://localhost:5050/api/students?class_id=${classEntry.class_id}&section=${selectedSection}`
+  //     );
+  //     if (!res.ok) throw new Error("Failed to fetch students");
+  //     const data = await res.json();
+  //     setStudentsList(data);
+  //   } catch (err) {
+  //     console.error("Error fetching students:", err);
+  //     setStudentsList([]);
+  //   }
+  // };
+  
 
   return (
     <div className="container-fluid p-3">
@@ -366,27 +417,132 @@ const AddStudent = () => {
           </button>
         </div>
 
-        {/* Grade Dropdown */}
-        <div className="row mb-3">
+        {/* Filters Row */}
+        <div className="row g-3 align-items-center mb-3">
+          {/* Grade Dropdown */}
           <div className="col-md-4">
             <label className="form-label">Select Grade</label>
             <select
               className="form-select"
               value={selectedGrade}
-              onChange={(e) => setSelectedGrade(e.target.value)}
+              onChange={(e) => {
+                setSelectedGrade(e.target.value);
+                setSelectedSection("");
+              }}
             >
-              <option value="">Choose Grade...</option>
-              {/* {classesWithSections.map((classObj) => (
-                <option key={classObj.class_id} value={classObj.class_name}>
-                  {classObj.class_name}
+              <option value="">-- Select Grade --</option>
+              {Object.keys(classesWithSections).map((grade) => (
+                <option key={grade} value={grade}>
+                  {grade}
                 </option>
-              ))} */}
+              ))}
             </select>
           </div>
+
+          {/* Section Dropdown */}
+          <div className="col-md-4">
+            <label className="form-label">Select Section</label>
+            <select
+              className="form-select"
+              value={selectedSection}
+              onChange={(e) => setSelectedSection(e.target.value)}
+              disabled={!selectedGrade}
+            >
+              <option value="">-- Select Section --</option>
+              {selectedGrade &&
+                classesWithSections[selectedGrade]?.map((section) => (
+                  <option key={section} value={section}>
+                    {section}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          {/* Search Button */}
+          <div className="col-md-4 d-flex align-items-end">
+            <button className="btn btn-success w-100" onClick={handleSearch}>
+              Search
+            </button>
+          </div>
         </div>
+
+        <div className="mt-3">
+          <h5>Students in {selectedGrade} - {selectedSection}</h5>
+          {students.length === 0 ? (
+            <p>No students found.</p>
+          ) : (
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>Admission No</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>DOB</th>
+                  <th>Gender</th>
+                  <th>Contact</th>
+                  <th>Grade</th>
+                  <th>Section</th>
+                  <th>Class Teacher</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((s) => (
+                  <tr key={s.student_id}>
+                    <td>{s.admission_no}</td>
+                    <td>{s.first_name}</td>
+                    <td>{s.last_name}</td>
+                    <td>{s.dob}</td>
+                    <td>{s.gender}</td>
+                    <td>{s.contact_info}</td>
+                    <td>{s.class_name}</td>
+                    <td>{s.class_section}</td>
+                    <td>{s.class_teacher}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+
+        {/* {studentsList.length > 0 && (
+          <div className="mt-3">
+            <h5>Students in {selectedGrade} - {selectedSection}</h5>
+            <div className="table-responsive">
+              <table className="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>Admission No</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>DOB</th>
+                    <th>Gender</th>
+                    <th>Contact</th>
+                    <th>Section</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentsList.map((student) => (
+                    <tr key={student.admission_no}>
+                      <td>{student.admission_no}</td>
+                      <td>{student.first_name}</td>
+                      <td>{student.last_name}</td>
+                      <td>{student.dob}</td>
+                      <td>{student.gender}</td>
+                      <td>{student.contact_info}</td>
+                      <td>{student.section}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )} */}
+
+
       </div>
 
-      {/* Row 3: Classes Display */}
+      {/* Row 3: Classes Display
       <div className="card shadow-sm p-3 mt-3">
         
         <div className="d-flex justify-content-between align-items-center mb-3">
@@ -398,13 +554,25 @@ const AddStudent = () => {
             + Add Student
           </button>
         </div>
-        
-        
 
-      </div>
+      </div> */}
       
     </div>
   );
 };
 
 export default AddStudent;
+
+
+
+
+
+// const AddStudent = () => (
+//   <div className="p-4">
+//     <h2>Add Student</h2>
+//     <p>Placeholder content for adding a student.</p>
+//   </div>
+// );
+
+// export default AddStudent;
+
