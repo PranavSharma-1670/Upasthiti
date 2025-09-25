@@ -1,5 +1,5 @@
 import express from "express";
-import { getClassesWithSections ,getStudentsByGradeAndSection} from "../controllers/studentsController.js";
+import { getClassesWithSections ,getStudentsByGradeAndSection, addStudent} from "../controllers/studentsController.js";
 
 const router = express.Router();
 
@@ -7,5 +7,7 @@ const router = express.Router();
 router.get("/classes", getClassesWithSections);
 
 router.get("/:grade/:section", getStudentsByGradeAndSection);
+
+router.post("/", addStudent);
 
 export default router;
