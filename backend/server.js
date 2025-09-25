@@ -4,6 +4,8 @@ import bodyParser from "body-parser";
 import testRoutes from "./routes/testConnection.js";
 import eventsRoutes from "./routes/events.js";
 import studentsRoutes from "./routes/students.js";
+import teacherRoutes from "./routes/teachers.js";
+import classRecordRoutes from "./routes/classRecords.js";
 
 const app = express();
 app.use(cors());
@@ -19,6 +21,8 @@ app.get("/", (req, res) => {
 app.use("/api/test", testRoutes);
 app.use("/api/events", eventsRoutes);
 app.use("/api/students", studentsRoutes);
+app.use("/api/teachers", teacherRoutes);
+app.use("/api/records", classRecordRoutes);
 
 
 app.listen(5050, () => {
