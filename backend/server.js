@@ -6,6 +6,7 @@ import eventsRoutes from "./routes/events.js";
 import studentsRoutes from "./routes/students.js";
 import teacherRoutes from "./routes/teachers.js";
 import classRecordRoutes from "./routes/classRecords.js";
+import attendanceRoutes from "./routes/attendance.js";
 
 const app = express();
 app.use(cors());
@@ -23,6 +24,7 @@ app.use("/api/events", eventsRoutes);
 app.use("/api/students", studentsRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/records", classRecordRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 
 app.listen(5050, () => {
